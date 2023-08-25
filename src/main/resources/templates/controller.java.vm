@@ -1,0 +1,119 @@
+package ${package.Controller};
+
+#if(${swagger2})
+import io.swagger.annotations.ApiOperation;
+#end
+import org.springframework.beans.factory.annotation.Autowired;
+import com.baomidou.mybatisplus.extension.api.R;
+
+import com.ecnu.center.common.ResponseInfo;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springframework.web.bind.annotation.*;
+
+##导入实体类包
+import $!{package.Service}.$!{table.serviceName};
+import ${package.Entity}.${entity};
+
+#if(${restControllerStyle})
+import org.springframework.web.bind.annotation.RestController;
+#else
+import org.springframework.stereotype.Controller;
+#end
+#if(${superControllerClassPackage})
+import ${superControllerClassPackage};
+#end
+
+import java.util.List;
+
+/**
+ * <p>
+ * $!{table.comment} 前端控制器
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+#if(${restControllerStyle})
+@RestController
+#else
+@Controller
+#end
+@RequestMapping("#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end")
+#if(${kotlin})
+class ${table.controllerName}#if(${superControllerClass}) : ${superControllerClass}()#end
+
+#else
+
+#if(${superControllerClass})
+public class ${table.controllerName} extends ${superControllerClass} {
+#else
+public class ${table.controllerName} {
+#end
+
+    @Autowired
+    private ${table.serviceName} ${table.entityPath}Service;
+    #if(${swagger2})
+    @ApiOperation(value = "查询所有")
+    #end
+    @GetMapping
+    public ResponseInfo<List<${entity}>> findAll() {
+        return ResponseInfo.success(${table.entityPath}Service.list());
+    }
+    #if(${swagger2})
+    @ApiOperation(value = "查询数据")
+    #end
+    @GetMapping("/{id}")
+    public ResponseInfo<${entity}> findone(@PathVariable Integer id) {
+        return ResponseInfo.success(${table.entityPath}Service.getById(id));
+    }
+
+    #if(${swagger2})
+    @ApiOperation(value = "新增数据")
+    #end
+    @PostMapping
+    public ResponseInfo<Boolean> save(@RequestBody ${entity} ${table.entityPath}){
+        return ResponseInfo.success(${table.entityPath}Service.saveOrUpdate(${table.entityPath}));
+    }
+
+    #if(${swagger2})
+    @ApiOperation(value = "修改数据")
+    #end
+    @PutMapping
+    public ResponseInfo<Boolean> update(@RequestBody ${entity} ${table.entityPath}) {
+        return ResponseInfo.success(${table.entityPath}Service.updateById(${table.entityPath}));
+    }
+
+    #if(${swagger2})
+    @ApiOperation(value = "删除数据")
+    #end
+    @DeleteMapping("/{id}")
+    public ResponseInfo<Boolean> delete(@PathVariable Integer id) {//这里的“id”必须和DeleteMapping里面的名字一样
+        return ResponseInfo.success(${table.entityPath}Service.removeById(id));
+    }
+
+    #if(${swagger2})
+    @ApiOperation(value = "批量删除数据")
+    #end
+    @PostMapping("/batchdelete")
+    public ResponseInfo<Boolean> deleteBatch(@RequestBody List<Integer> ids) {
+        return ResponseInfo.success(${table.entityPath}Service.removeByIds(ids));
+    }
+
+    #if(${swagger2})
+    @ApiOperation(value = "分页查询")
+    #end
+    @GetMapping("/page")
+    public ResponseInfo<IPage<${entity}>> findPage(
+        @RequestParam Integer pageNum,
+        @RequestParam Integer pageSize) {
+            IPage<${entity}> page = new Page<>(pageNum, pageSize);
+            QueryWrapper<${entity}> queryWrapper = new QueryWrapper<>();
+            return ResponseInfo.success(${table.entityPath}Service.page(page, queryWrapper));
+    }
+}
+
+
+#end
