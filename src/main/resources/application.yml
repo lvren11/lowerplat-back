@@ -1,9 +1,9 @@
 spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://localhost:3306/abc?serverTimezone=UTC
-    username: root
-    password: 2020jyh2020
+    url: XXXX
+    username: XXX
+    password: XXXX
     driver-class-name: com.mysql.cj.jdbc.Driver
   data:
     redis:
@@ -24,6 +24,6 @@ server:
 
 mybatis-plus:
   configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #??SQL????
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 
